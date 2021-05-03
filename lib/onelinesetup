@@ -1,0 +1,17 @@
+#!/bin/bash
+set -o errexit
+
+DOMAIN=${1:-magento2.local}
+VERSION=${2:-2.4.4}
+EDITION=${3:-community}
+
+# &&'s are used below otherwise onelinesetup script fails/errors on bin/download
+bin/download "${VERSION}" "${EDITION}" \
+  && echo "Your system password has been requested to add an entry to /etc/hosts..." \
+  && echo "127.0.0.1 ::1 $DOMAIN" | sudo tee -a /etc/hosts \
+  && echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf \
+  && bin/setup $DOMAIN
+  
+# To enable Xdebug on linux, you'll also need to open port 9001 on the firewall with
+sudo iptables -A INPUT -p tcp --dport 9001 -j ACCEPT
+

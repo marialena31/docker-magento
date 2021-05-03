@@ -1,0 +1,13 @@
+#!/bin/bash
+set -o errexit
+
+VERSION=${1:-2.4.4}
+EDITION=${2:-community}
+
+docker-compose stop && docker-compose up -d
+[ $? != 0 ] && echo "Failed to start Docker services" && exit
+
+bin/setup-composer-auth
+
+docker-compose exec phpfpm composer create-project --repository=https://repo.magento.com/ magento/project-"${EDITION}"-edition="${VERSION}" .
+
