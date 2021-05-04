@@ -1,13 +1,18 @@
 #!/bin/bash
 set -o errexit
 
-VERSION=${1:-2.4.4}
+VERSION=${1:-2.4.2}
 EDITION=${2:-community}
 
-docker-compose stop && docker-compose up -d
+mkdir -pv ../src/{app,es,mysql,rabbitmq,redis,sock}_data1/ ../src/{es,mysql,nginx,phpfpm,rabbitmq}_log1/
+
+
+docker-compose stop && docker-compose -f ../compose/docker-compose.yml --env-file ../compose/.env build
+docker-compose -f ../compose/docker-compose.yml --env-file ../compose/.env up -d
 [ $? != 0 ] && echo "Failed to start Docker services" && exit
 
 bin/setup-composer-auth
+echo "${EDITION}" "${VERSION}"
+bin/clinotty composer create-project --repository=https://repo.magento.com/ magento/project-"${EDITION}"-edition="${VERSION}" .
 
-docker-compose exec phpfpm composer create-project --repository=https://repo.magento.com/ magento/project-"${EDITION}"-edition="${VERSION}" .
 

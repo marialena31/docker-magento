@@ -1,6 +1,6 @@
 Cloner le projet dans le répertoire souhaité.
-cd docker-magento/lib
-Lancer la commande onelinesetup 
+cd docker-magento/compose
+Lancer la commande ../lib/onelinesetup 
 
 Xdebug & PHPStorm
 First, install the Chrome Xdebug helper. After installed, right click on the Chrome icon for it and go to Options. Under IDE Key, select PHPStorm from the list and click Save.
